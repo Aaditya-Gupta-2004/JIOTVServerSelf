@@ -13,8 +13,7 @@ const PORT = process.env.PORT || 3500;
 // Public URL for Render
 // Set PUBLIC_URL in Render environment variables:
 // https://jiotvserverself.onrender.com
-const SERVER_URL =
-  process.env.PUBLIC_URL || `http://localhost:${PORT}`;
+const SERVER_URL = process.env.PUBLIC_URL || `http://localhost:${PORT}`;
 
 // Generate playlist
 router.get("/playlist", async (req, res) => {
