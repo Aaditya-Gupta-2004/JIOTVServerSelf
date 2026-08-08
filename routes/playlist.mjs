@@ -1,68 +1,99 @@
 ```javascript
 import express from "express";
 const router = express.Router();
+
 import fetch from "node-fetch";
 import fs from "fs";
-import playlist from "../utils/genPlaylist.mjs";
 
+import playlist from "../utils/genPlaylist.mjs";
 import jsonPlaylist from "../utils/getJsonPlaylist.mjs";
 
 const PORT = process.env.PORT || 3500;
 
 // Public URL for Render
+// Set PUBLIC_URL in Render environment variables:
+// https://jiotvserverself.onrender.com
 const SERVER_URL =
   process.env.PUBLIC_URL || `http://localhost:${PORT}`;
 
+// Generate playlist
 router.get("/playlist", async (req, res) => {
-  res.contentType("application/vnd.apple.mpegurl");
+  try {
+    res.contentType("application/vnd.apple.mpegurl");
 
-  const playlistData = await playlist(SERVER_URL);
+    const playlistData = await playlist(SERVER_URL);
 
-  res.status(200).send(playlistData);
+    res.status(200).send(playlistData);
+  } catch (error) {
+    console.error("Error generating playlist:", error);
+    res.status(500).send("Failed to generate playlist");
+  }
 });
 
+// Download playlist
 router.get("/playlist/download", async (req, res) => {
-  res.contentType("application/vnd.apple.mpegurl");
+  try {
+    res.contentType("application/vnd.apple.mpegurl");
 
-  res.setHeader(
-    "Content-Disposition",
-    "attachment; filename=" + "playlist.m3u8"
-  );
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=playlist.m3u8"
+    );
 
-  const playlistData = await playlist(SERVER_URL);
+    const playlistData = await playlist(SERVER_URL);
 
-  res.status(200).send(playlistData);
+    res.status(200).send(playlistData);
+  } catch (error) {
+    console.error("Error generating playlist download:", error);
+    res.status(500).send("Failed to generate playlist");
+  }
 });
 
+// JSON playlist
 router.get("/playlist/json", async (req, res) => {
-  res.set("Cache-control", "public, max-age=" + 60 * 60 * 2);
-  res.status(200).send(await jsonPlaylist());
+  try {
+    res.set(
+      "Cache-control",
+      "public, max-age=" + 60 * 60 * 2
+    );
+
+    res.status(200).send(await jsonPlaylist());
+  } catch (error) {
+    console.error("Error generating JSON playlist:", error);
+    res.status(500).send("Failed to generate JSON playlist");
+  }
 });
 
+// Update channel playlist
 router.get("/updateplaylist", async (req, res) => {
-  const options = {
-    method: "GET",
-    params: {},
-    headers: {
-      Accept: "*/*",
-      "User-Agent":
-        "plaYtv/7.0.8 (Linux;Android 7.1.2) ExoPlayerLib/2.11.7",
-    },
-  };
+  try {
+    const options = {
+      method: "GET",
+      params: {},
+      headers: {
+        Accept: "*/*",
+        "User-Agent":
+          "plaYtv/7.0.8 (Linux;Android 7.1.2) ExoPlayerLib/2.11.7",
+      },
+    };
 
-  let response = await fetch(
-    "https://jiotv.data.cdn.jio.com/apis/v1.4/getMobileChannelList/get/?os=android&devicetype=phone",
-    options
-  );
+    let response = await fetch(
+      "https://jiotv.data.cdn.jio.com/apis/v1.4/getMobileChannelList/get/?os=android&devicetype=phone",
+      options
+    );
 
-  response = await response.json();
+    response = await response.json();
 
-  fs.writeFileSync(
-    "./channels.jiotv",
-    JSON.stringify(response)
-  );
+    fs.writeFileSync(
+      "./channels.jiotv",
+      JSON.stringify(response)
+    );
 
-  res.status(200).send(response);
+    res.status(200).send(response);
+  } catch (error) {
+    console.error("Error updating playlist:", error);
+    res.status(500).send("Failed to update playlist");
+  }
 });
 
 export default router;
