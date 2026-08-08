@@ -63,6 +63,7 @@ router.get("/playlist/json", async (req, res) => {
 });
 
 // Update channel playlist
+// Update channel playlist
 router.get("/updateplaylist", async (req, res) => {
   try {
     const options = {
@@ -74,25 +75,20 @@ router.get("/updateplaylist", async (req, res) => {
           "plaYtv/7.0.8 (Linux;Android 7.1.2) ExoPlayerLib/2.11.7",
       },
     };
-
     let response = await fetch(
       "https://jiotv.data.cdn.jio.com/apis/v1.4/getMobileChannelList/get/?os=android&devicetype=phone",
       options
     );
-
     response = await response.json();
-
     fs.writeFileSync(
       "./channels.jiotv",
       JSON.stringify(response)
     );
-
     res.status(200).send(response);
   } catch (error) {
     console.error("Error updating playlist:", error);
     res.status(500).send("Failed to update playlist");
   }
 });
-
 export default router;
 ```
