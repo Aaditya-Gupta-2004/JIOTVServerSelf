@@ -299,20 +299,37 @@
         setIp();
       }
     };
-    function copyPlaylist() {
-      navigator.clipboard.writeText(`http://${ipinfo['ip']}:${ipinfo['port']}/playlist`).then(function () {
-        alertEl.style.display = "block";
-        alertEl.style.backgroundColor = "#4CAF50";
-        alertEl.innerHTML = "<strong>Success!</strong> Playlist Copyed to clipboard \n" + `http://${ipinfo['ip']}:${ipinfo['port']}/playlist`;
-        console.log("su");
-      }, function (err) {
-        console.log("er");
-        console.error('Async: Could not copy text: ', err);
-        alertEl.style.display = "block";
-        alertEl.style.backgroundColor = "#4CAF50";
-        alertEl.innerHTML += "<strong>Error!</strong> Error while Copying Playlist to clipboard \n" + `http://${ipinfo['ip']}:${ipinfo['port']}/playlist`;
-      });
+    ```javascript
+function copyPlaylist() {
+  const playlistUrl = `${window.location.origin}/playlist`;
+
+  navigator.clipboard.writeText(playlistUrl).then(
+    function () {
+      alertEl.style.display = "block";
+      alertEl.style.backgroundColor = "#4CAF50";
+      alertEl.innerHTML =
+        "<strong>Success!</strong> Playlist copied to clipboard<br>" +
+        playlistUrl;
+
+      console.log("Playlist URL copied:", playlistUrl);
+    },
+    function (err) {
+      console.log("Error");
+      console.error(
+        "Async: Could not copy text: ",
+        err
+      );
+
+      alertEl.style.display = "block";
+      alertEl.style.backgroundColor = "#f44336";
+      alertEl.innerHTML =
+        "<strong>Error!</strong> Error while copying playlist to clipboard<br>" +
+        playlistUrl;
     }
+  );
+}
+```
+
     async function setIp() {
         let data = await fetch('/ip');
         ipinfo = await data.json();
