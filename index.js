@@ -48,13 +48,13 @@ import ipRoute from "./routes/ip.mjs";
 import channelsRoute from "./routes/channel.mjs";
 import playlistRoute from "./routes/playlist.mjs";
 import catchulRoute from "./routes/catchup/index.mjs";
-
+import testProxyRoute from "./routes/testproxy.mjs";
 app.use("/", loginRoute);
 app.use("/", ipRoute);
 app.use("/", channelsRoute);
 app.use("/", playlistRoute);
 app.use("/catchup", catchulRoute);
-
+app.use("/", testProxyRoute);
 
 // app.use(express.static(path.join(__dirname, "public")));
 import { handler } from "./build/handler.js";
