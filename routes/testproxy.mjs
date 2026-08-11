@@ -10,7 +10,7 @@ const TARGET_URL =
 
 // Add more proxies here as you find them - one per line.
 const proxies = [
-  "socks5://139.59.1.14:3128",
+  "http://139.59.1.14:3128",
 ];
 
 const TIMEOUT_MS = 10000;
