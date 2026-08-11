@@ -19,7 +19,7 @@ function getAgent(proxyUrl) {
   if (proxyUrl.startsWith("socks")) {
     return new SocksProxyAgent(proxyUrl);
   }
-  return new HttpsProxyAgent(proxyUrl);
+  return new HttpsProxyAgent(proxyUrl, { rejectUnauthorized: false });
 }
 
 async function testProxy(proxyUrl) {
